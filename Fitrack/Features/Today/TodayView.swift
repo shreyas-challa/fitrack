@@ -10,6 +10,10 @@ struct TodayView: View {
 
     @State private var showingNewLift = false
     @State private var showingNewCardio = false
+    @State private var editingLift: WorkoutTemplate?
+    @State private var editingCardio: CardioTemplate?
+    @State private var startingLift: WorkoutTemplate?
+    @State private var startingCardio: CardioTemplate?
 
     var body: some View {
         ScreenScaffold(
@@ -33,23 +37,14 @@ struct TodayView: View {
             )
         ) {
             if liftTemplates.isEmpty && cardioTemplates.isEmpty {
-                Card {
-                    VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                        Text("No templates yet")
-                            .font(Theme.Font.body(17, weight: .semibold))
-                            .foregroundStyle(Theme.Color.textPrimary)
-                        Text("Tap + to create your first lift or cardio template.")
-                            .font(Theme.Font.body(14))
-                            .foregroundStyle(Theme.Color.textSecondary)
-                    }
-                }
+                emptyState
             }
 
             if !liftTemplates.isEmpty {
                 section("Lift Templates") {
                     ForEach(liftTemplates) { template in
-                        NavigationLink {
-                            LiftTemplateEditorView(template: template)
+                        Button {
+                            startingLift = template
                         } label: {
                             templateRow(
                                 name: template.name,
@@ -58,6 +53,19 @@ struct TodayView: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            Button {
+                                editingLift = template
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
+                            Button(role: .destructive) {
+                                context.delete(template)
+                                try? context.save()
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                     }
                 }
             }
@@ -65,8 +73,8 @@ struct TodayView: View {
             if !cardioTemplates.isEmpty {
                 section("Cardio Templates") {
                     ForEach(cardioTemplates) { template in
-                        NavigationLink {
-                            CardioTemplateEditorView(template: template)
+                        Button {
+                            startingCardio = template
                         } label: {
                             templateRow(
                                 name: template.name,
@@ -75,21 +83,59 @@ struct TodayView: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            Button {
+                                editingCardio = template
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
+                            Button(role: .destructive) {
+                                context.delete(template)
+                                try? context.save()
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                     }
                 }
             }
         }
         .sheet(isPresented: $showingNewLift) {
-            NavigationStack {
-                LiftTemplateEditorView(template: nil)
-            }
-            .preferredColorScheme(.dark)
+            NavigationStack { LiftTemplateEditorView(template: nil) }
+                .preferredColorScheme(.dark)
         }
         .sheet(isPresented: $showingNewCardio) {
-            NavigationStack {
-                CardioTemplateEditorView(template: nil)
+            NavigationStack { CardioTemplateEditorView(template: nil) }
+                .preferredColorScheme(.dark)
+        }
+        .sheet(item: $editingLift) { tpl in
+            NavigationStack { LiftTemplateEditorView(template: tpl) }
+                .preferredColorScheme(.dark)
+        }
+        .sheet(item: $editingCardio) { tpl in
+            NavigationStack { CardioTemplateEditorView(template: tpl) }
+                .preferredColorScheme(.dark)
+        }
+        .fullScreenCover(item: $startingLift) { tpl in
+            NavigationStack { LiftSessionView(template: tpl) }
+                .preferredColorScheme(.dark)
+        }
+        .fullScreenCover(item: $startingCardio) { tpl in
+            NavigationStack { CardioSessionView(template: tpl) }
+                .preferredColorScheme(.dark)
+        }
+    }
+
+    private var emptyState: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                Text("No templates yet")
+                    .font(Theme.Font.body(17, weight: .semibold))
+                    .foregroundStyle(Theme.Color.textPrimary)
+                Text("Tap + to create your first lift or cardio template, then tap any template to start a session.")
+                    .font(Theme.Font.body(14))
+                    .foregroundStyle(Theme.Color.textSecondary)
             }
-            .preferredColorScheme(.dark)
         }
     }
 
@@ -127,10 +173,13 @@ struct TodayView: View {
                         .foregroundStyle(Theme.Color.textSecondary)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 13, weight: .semibold))
+                Image(systemName: "play.fill")
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(Theme.Color.textTertiary)
             }
         }
     }
 }
+
+extension WorkoutTemplate: Identifiable {}
+extension CardioTemplate: Identifiable {}
