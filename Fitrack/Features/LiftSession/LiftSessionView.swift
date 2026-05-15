@@ -179,15 +179,15 @@ struct LiftSessionView: View {
         loggedExercises.removeAll { $0.sets.isEmpty }
         for (i, logged) in loggedExercises.enumerated() {
             logged.orderIndex = i
-            if !loggedExercises.contains(logged) {
-                context.delete(logged)
-            }
         }
         session.endedAt = .now
         session.updatedAt = .now
         PRDetector.detectAndPersist(for: session, context: context)
         try? context.save()
         restTimer.stop()
+        #if canImport(UIKit)
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        #endif
         dismiss()
     }
 
