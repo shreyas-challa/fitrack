@@ -99,9 +99,9 @@ struct HistoryView: View {
     private var legend: some View {
         HStack(spacing: Theme.Spacing.m) {
             legendChip(color: Theme.Color.surfaceElevated, label: "Rest")
-            legendChip(color: Color(hex: 0x3F3F46), label: "Lift")
-            legendChip(color: Color(hex: 0x52525B), label: "Cardio")
-            legendChip(color: Theme.Color.accent.opacity(0.7), label: "Both")
+            legendChip(color: Color(hex: 0x22C55E), label: "Lift")
+            legendChip(color: Color(hex: 0x22C55E).opacity(0.55), label: "Cardio")
+            legendChip(color: Color(hex: 0x4ADE80), label: "Both")
             Spacer()
         }
         .padding(.top, Theme.Spacing.s)
@@ -119,15 +119,14 @@ struct HistoryView: View {
     }
 
     private func fillFor(kinds: Set<WorkoutKind>, day: Date) -> Color {
-        if kinds.contains(.lift) && kinds.contains(.cardio) { return Theme.Color.accent.opacity(0.7) }
-        if kinds.contains(.lift) { return Color(hex: 0x3F3F46) }
-        if kinds.contains(.cardio) { return Color(hex: 0x52525B) }
+        if kinds.contains(.lift) && kinds.contains(.cardio) { return Color(hex: 0x4ADE80) }
+        if kinds.contains(.lift) { return Color(hex: 0x22C55E) }
+        if kinds.contains(.cardio) { return Color(hex: 0x22C55E).opacity(0.55) }
         return Theme.Color.surfaceElevated
     }
 
     private func textColorFor(kinds: Set<WorkoutKind>, day: Date) -> Color {
-        if kinds.contains(.lift) && kinds.contains(.cardio) { return Theme.Color.background }
-        return kinds.isEmpty ? Theme.Color.textTertiary : Theme.Color.textPrimary
+        kinds.isEmpty ? Theme.Color.textTertiary : Theme.Color.background
     }
 
     private var sessionList: some View {
