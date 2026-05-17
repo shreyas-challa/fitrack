@@ -37,8 +37,8 @@ struct StatsView: View {
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Theme.Color.textTertiary)
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(value).font(Theme.Font.numeric(28, weight: .bold)).foregroundStyle(Theme.Color.textPrimary)
-                Text(suffix).font(Theme.Font.body(12)).foregroundStyle(Theme.Color.textSecondary)
+                Text(value).font(Theme.Font.numeric(28, weight: .bold)).foregroundStyle(Theme.Color.success)
+                Text(suffix).font(Theme.Font.body(12)).foregroundStyle(Theme.Color.success.opacity(0.7))
             }
         }
     }
