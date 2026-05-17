@@ -43,27 +43,47 @@ struct TodayView: View {
             if !liftTemplates.isEmpty {
                 section("Lift Templates") {
                     ForEach(liftTemplates) { template in
-                        Button {
-                            startingLift = template
-                        } label: {
-                            templateRow(
-                                name: template.name,
-                                subtitle: "\(template.exercises.count) exercises",
-                                systemImage: "dumbbell.fill"
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            Button {
-                                editingLift = template
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            Button(role: .destructive) {
-                                context.delete(template)
-                                try? context.save()
-                            } label: {
-                                Label("Delete", systemImage: "trash")
+                        Card {
+                            HStack(spacing: Theme.Spacing.m) {
+                                Button { startingLift = template } label: {
+                                    HStack(spacing: Theme.Spacing.m) {
+                                        Image(systemName: "dumbbell.fill")
+                                            .font(.system(size: 18, weight: .semibold))
+                                            .foregroundStyle(Theme.Color.accent)
+                                            .frame(width: 32)
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(template.name)
+                                                .font(Theme.Font.body(16, weight: .semibold))
+                                                .foregroundStyle(Theme.Color.textPrimary)
+                                            Text("\(template.exercises.count) exercises")
+                                                .font(Theme.Font.body(13))
+                                                .foregroundStyle(Theme.Color.textSecondary)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "play.fill")
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .foregroundStyle(Theme.Color.textTertiary)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+
+                                Menu {
+                                    Button { editingLift = template } label: {
+                                        Label("Edit", systemImage: "pencil")
+                                    }
+                                    Button(role: .destructive) {
+                                        context.delete(template)
+                                        try? context.save()
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundStyle(Theme.Color.textTertiary)
+                                        .padding(.vertical, 8)
+                                        .padding(.leading, Theme.Spacing.s)
+                                }
                             }
                         }
                     }
@@ -73,27 +93,47 @@ struct TodayView: View {
             if !cardioTemplates.isEmpty {
                 section("Cardio Templates") {
                     ForEach(cardioTemplates) { template in
-                        Button {
-                            startingCardio = template
-                        } label: {
-                            templateRow(
-                                name: template.name,
-                                subtitle: cardioSubtitle(template),
-                                systemImage: template.type.systemImage
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            Button {
-                                editingCardio = template
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            Button(role: .destructive) {
-                                context.delete(template)
-                                try? context.save()
-                            } label: {
-                                Label("Delete", systemImage: "trash")
+                        Card {
+                            HStack(spacing: Theme.Spacing.m) {
+                                Button { startingCardio = template } label: {
+                                    HStack(spacing: Theme.Spacing.m) {
+                                        Image(systemName: template.type.systemImage)
+                                            .font(.system(size: 18, weight: .semibold))
+                                            .foregroundStyle(Theme.Color.accent)
+                                            .frame(width: 32)
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(template.name)
+                                                .font(Theme.Font.body(16, weight: .semibold))
+                                                .foregroundStyle(Theme.Color.textPrimary)
+                                            Text(cardioSubtitle(template))
+                                                .font(Theme.Font.body(13))
+                                                .foregroundStyle(Theme.Color.textSecondary)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "play.fill")
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .foregroundStyle(Theme.Color.textTertiary)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+
+                                Menu {
+                                    Button { editingCardio = template } label: {
+                                        Label("Edit", systemImage: "pencil")
+                                    }
+                                    Button(role: .destructive) {
+                                        context.delete(template)
+                                        try? context.save()
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundStyle(Theme.Color.textTertiary)
+                                        .padding(.vertical, 8)
+                                        .padding(.leading, Theme.Spacing.s)
+                                }
                             }
                         }
                     }
@@ -157,26 +197,5 @@ struct TodayView: View {
         }
     }
 
-    private func templateRow(name: String, subtitle: String, systemImage: String) -> some View {
-        Card {
-            HStack(spacing: Theme.Spacing.m) {
-                Image(systemName: systemImage)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(Theme.Color.accent)
-                    .frame(width: 32)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(name)
-                        .font(Theme.Font.body(16, weight: .semibold))
-                        .foregroundStyle(Theme.Color.textPrimary)
-                    Text(subtitle)
-                        .font(Theme.Font.body(13))
-                        .foregroundStyle(Theme.Color.textSecondary)
-                }
-                Spacer()
-                Image(systemName: "play.fill")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Theme.Color.textTertiary)
-            }
-        }
-    }
+
 }
